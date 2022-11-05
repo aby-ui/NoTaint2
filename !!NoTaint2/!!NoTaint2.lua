@@ -46,6 +46,7 @@ function NoTaint2_CleanGlobal(self)
             _G[k] = nil
         end
     end
+    --ObjectiveTrackerFrame.lastMapID = nil
 end
 
 hooksecurefunc(EditModeManagerFrame, "ClearActiveChangesFlags", function(self)
@@ -95,7 +96,6 @@ GameMenuButtonEditMode:HookScript("PreClick", cleanAll)
 local eventframe = CreateFrame("Frame")
 eventframe:RegisterEvent("PLAYER_LEAVING_WORLD")
 eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
---eventframe:RegisterEvent("EDIT_MODE_LAYOUTS_UPDATED")
 eventframe:SetScript("OnEvent", function(self, event, ...)
     if event == "PLAYER_ENTERING_WORLD" then
         cleanAll()
@@ -106,3 +106,28 @@ eventframe:SetScript("OnEvent", function(self, event, ...)
     end
 end)
 
+--[[------------------------------------------------------------
+this is totally magic, thanks god ObjectiveTrackerFrame is after the ActionBars
+---------------------------------------------------------------]]
+local barsToUpdate = { MainMenuBar, MultiBarBottomLeft, MultiBarBottomRight, StanceBar, PetActionBar, PossessActionBar, MainMenuBarVehicleLeaveButton, MultiBarRight, MultiBarLeft }
+for _, bar in ipairs(barsToUpdate) do
+    if bar.UpdateSpellFlyoutDirection then
+        hooksecurefunc(bar, "UpdateSpellFlyoutDirection", function(self)
+            if not issecurevariable(self, "flyoutDirection") then
+                self.flyoutDirection = nil
+            end
+            if not issecurevariable(self, "snappedToFrame") then
+                self.snappedToFrame = nil
+            end
+        end)
+    end
+end
+
+hooksecurefunc("SetClampedTextureRotation", function(texture)
+    local parent = texture and texture:GetParent()
+    if parent and parent.FlyoutArrowPushed and parent.FlyoutArrowHighlight then
+        if not issecurevariable(texture, "rotationDegrees") then
+            texture.rotationDegrees = nil
+        end
+    end
+end)

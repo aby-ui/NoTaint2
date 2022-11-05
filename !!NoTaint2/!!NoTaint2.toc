@@ -4,6 +4,6 @@
 ## Title-zhCN: |cff880303[爱不易]|r !!NoTaint2
 ## Notes-zhCN: 改善10.0因为暴雪编辑模式污染导致的卡动作条按键等问题（只能改善不能杜绝）
 ## Author: warbaby
-## Version: r221102
+## Version: r221106
 
 !!NoTaint2.lua
