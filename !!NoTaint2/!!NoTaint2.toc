@@ -2,8 +2,8 @@
 ## Title: !!NoTaint2
 ## Notes: Reduce the chance that GREAT EditMode being tainted.
 ## Title-zhCN: |cff880303[爱不易]|r !!NoTaint2
-## Notes-zhCN: 改善10.0因为暴雪编辑模式污染导致的卡动作条按键等问题（只能改善不能杜绝）
+## Notes-zhCN: 改善10.0因为暴雪编辑模式污染导致的卡动作条按键等问题，还能在出现问题后紧急处理，提醒重载界面
 ## Author: warbaby
-## Version: r221106
+## Version: r221108
 
 !!NoTaint2.lua
