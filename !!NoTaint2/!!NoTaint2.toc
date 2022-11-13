@@ -1,9 +1,11 @@
 ## Interface: 100000
 ## Title: !!NoTaint2
-## Notes: Reduce the chance that GREAT EditMode being tainted.
+## Notes: Reduce the chance blizzard UI being tainted in Dragon Flight, and fix most action bar keypess blocking issues.
 ## Title-zhCN: |cff880303[爱不易]|r !!NoTaint2
 ## Notes-zhCN: 改善10.0因为暴雪编辑模式污染导致的卡动作条按键等问题，还能在出现问题后紧急处理，提醒重载界面
 ## Author: warbaby
-## Version: r221108
+## Version: r221114
+## SavedVariables: notaint2stop
+
 
 !!NoTaint2.lua

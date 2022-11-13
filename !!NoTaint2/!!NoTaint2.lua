@@ -6,21 +6,48 @@
 if not NoTaint2_Proc_ResetActionButtonAction then
     NoTaint2_Proc_ResetActionButtonAction = 1
 
-    local msg_short = "Action Bars are tainted\n/reload is RECOMMENDED"
-    local msg_long = "!!NoTaint2：Your action bars are tainted by [|cffffff00%s|r], reload UI to prevent further damage."
+    -- use /run ActionButton2.action = 2 ActionButton2:UpdateAction() to test
+
+    local TXT_WARNING_WINDOW = "Action Bars are tainted\n/reload is RECOMMENDED"
+    local TXT_WARNING_CHAT_MESSAGE = "!!NoTaint2: Your action bars are tainted by [|cffffff00%s|r], reload UI to prevent further damage."
+    local TXT_NOTICE_DISABLE = "Use '/notaint2' to stop showing the warning message."
+    local TXT_SLASH_SHOW = "!!NoTaint2: Will show warnings again."
+    local TXT_SLASH_STOP = "!!NoTaint2: Never show warnings for this account. use '/notaint2 show' to undo."
+
     if LOCALE_zhCN then
-        msg_short = "爱不易提醒：动作条被污染\n建议尽快/RELOAD"
-        msg_long = "爱不易NoTaint2提醒您：动作条被[|cffffff00%s|r]|cffff0000污染|r，已紧急处理，建议|cffffff00尽快重载界面|r"
+        TXT_WARNING_WINDOW = "爱不易提醒：动作条被污染\n建议尽快/RELOAD"
+        TXT_WARNING_CHAT_MESSAGE = "动作条被[|cffffff00%s|r]|cffff0000污染|r，已紧急处理，建议|cffffff00重载界面|r - 此功能由warbaby(爱不易)提供。"
+        TXT_NOTICE_DISABLE = "运行'/notaint2'停止显示警告信息."
+        TXT_SLASH_SHOW = "!!NoTaint2: 将恢复显示警告信息"
+        TXT_SLASH_STOP = "!!NoTaint2: 此账号不再显示警告信息，运行'/notaint2 show'恢复警告"
+    end
+
+    SLASH_NOTAINTII1 = "/notaint2"
+    SlashCmdList["NOTAINTII"] = function(msg)
+        if msg and msg:lower() == "show" then
+            DEFAULT_CHAT_FRAME:AddMessage(TXT_SLASH_SHOW)
+            notaint2stop = nil
+            if U1DBG then U1DBG.NT2S = nil end
+        else
+            DEFAULT_CHAT_FRAME:AddMessage(TXT_SLASH_STOP)
+            notaint2stop = 1
+            if U1DBG then U1DBG.NT2S = 1 end
+        end
     end
 
     local last = 0
     function NoTaint2_ShowWarning(tainted_by)
-        if GetTime() - last > 10 then
-            if last == 0 then
-                InvasionAlertSystem:AddAlert(nil, msg_short, false, 0, 0)
+        if GetTime() - last > 300 then
+            local show_warn = true
+            if U1DBG then show_warn = not U1DBG.NT2S else show_warn = not notaint2stop end
+            if show_warn then
+                DEFAULT_CHAT_FRAME:AddMessage(format(TXT_WARNING_CHAT_MESSAGE, tainted_by))
             end
-            last = GetTime()
-            DEFAULT_CHAT_FRAME:AddMessage(format(msg_long, tainted_by))
+            if last == 0 and show_warn then
+                InvasionAlertSystem:AddAlert(nil, TXT_WARNING_WINDOW, false, 0, 0)
+                DEFAULT_CHAT_FRAME:AddMessage(TXT_NOTICE_DISABLE)
+            end
+            if show_warn then last = GetTime() end
         end
     end
 
@@ -29,7 +56,7 @@ if not NoTaint2_Proc_ResetActionButtonAction then
         if not ok and not InCombatLockdown() then
             self.action=nil
             self:SetAttribute("_aby", "action")
-            NoTaint2_ShowWarning(tainted_by)
+            if self:IsVisible() then NoTaint2_ShowWarning(tainted_by) end
         end
     end
 
